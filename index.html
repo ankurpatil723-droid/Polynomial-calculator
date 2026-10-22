@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polynomial Calculator — Data Structures Mini Project</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#172238;--line:#283752;--text:#eef4ff;--muted:#9aabc5;--accent:#8b9cff;--accent2:#53e0c0;--danger:#ff8195;--shadow:0 18px 50px #0003}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#202d54 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:28px 20px 56px}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:28px}.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,var(--accent),#c18bff);color:#11172a;font-weight:900;font-size:22px;box-shadow:0 8px 25px #8b9cff44}.eyebrow{color:var(--accent2);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.top h1{margin:2px 0 0;font-size:clamp(23px,4vw,34px);letter-spacing:-.04em}.pill{border:1px solid var(--line);background:#10182a;padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px;white-space:nowrap}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;margin-bottom:20px}.card{background:linear-gradient(145deg,#151f34,#11192b);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow);min-width:0}.intro h2{font-size:24px;margin:0 0 8px;letter-spacing:-.03em}.intro p{color:var(--muted);margin:0;max-width:690px}.statbox{display:flex;flex-direction:column;justify-content:center;gap:12px}.stat{display:flex;align-items:center;justify-content:space-between;gap:15px}.stat span{color:var(--muted);font-size:13px}.stat strong{font-size:14px;color:var(--accent2)}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px}.section-title h3{font-size:16px;margin:0}.section-title small{color:var(--muted)}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field label{display:block;font-size:13px;color:#c6d3e8;margin-bottom:8px;font-weight:700}.field input{width:100%;padding:15px 16px;border-radius:13px;border:1px solid #344563;background:#0c1425;color:var(--text);font-size:16px;outline:none;transition:.2s}.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #8b9cff22}.hint{font-size:12px;color:var(--muted);margin-top:7px}.error{color:var(--danger);font-size:12px;min-height:18px;margin-top:5px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.btn{border:1px solid var(--line);border-radius:12px;padding:11px 15px;background:#1a2740;color:var(--text);font-weight:750;cursor:pointer;transition:transform .15s,border-color .15s,background .15s}.btn:hover{transform:translateY(-1px);border-color:#7285b0}.btn.primary{background:linear-gradient(135deg,#a2adff,#7f8cff);color:#10172b;border-color:transparent}.btn.green{background:#123c3b;border-color:#236f69;color:#a7ffea}.btn.subtle{background:transparent;color:var(--muted)}.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.operation-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.result-card{min-height:185px}.result-math{font-size:clamp(21px,3vw,30px);line-height:1.6;overflow-wrap:anywhere;font-weight:750;letter-spacing:-.025em;color:#fff;margin:12px 0}.result-label{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent2);font-weight:850}.empty{color:#72819b;font-size:15px;font-weight:500}.complexity{display:inline-flex;border:1px solid #344563;border-radius:9px;padding:5px 8px;color:#bdc9df;font-size:12px;margin-top:6px}.visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.list-visual{min-height:145px;overflow-x:auto;padding:12px 2px}.nodes{display:flex;align-items:center;gap:9px;min-width:max-content;padding:8px 3px}.node{display:flex;border:1px solid #4a5b7c;background:linear-gradient(180deg,#202e49,#172238);border-radius:11px;overflow:hidden;box-shadow:0 5px 16px #0002;animation:pop .35s ease both}.cell{padding:11px 12px;text-align:center;min-width:48px;font-family:ui-monospace,monospace;font-weight:800}.cell+.cell{border-left:1px solid #435372}.cell small{display:block;color:#92a5c5;font-size:9px;text-transform:uppercase;font-family:inherit;letter-spacing:.08em}.arrow{color:var(--accent2);font-size:19px;font-weight:900}.null{border:1px dashed #5b6b8b;border-radius:9px;padding:9px 12px;color:#aebdd5;font-family:ui-monospace,monospace;font-size:12px}.empty-list{color:#7788a4;font-size:13px;padding:15px 0}
+.steps{display:flex;flex-direction:column;gap:9px;max-height:290px;overflow:auto;padding-right:3px}.step{border:1px solid #2c3a55;border-radius:12px;padding:11px 13px;background:#10192a;color:#cbd7eb;font-size:13px}.step b{color:var(--accent2)}.step .math{font-family:ui-monospace,monospace;color:#fff;display:block;margin-top:3px}.note{font-size:12px;color:var(--muted);margin-top:12px}.footer{color:#6f809e;text-align:center;font-size:12px;margin-top:25px}.tag{display:inline-block;padding:4px 8px;border-radius:7px;background:#263251;color:#cdd7ff;font-size:11px;font-weight:800}
+@keyframes pop{from{opacity:0;transform:translateY(7px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:800px){.hero,.operation-row,.visual-grid{grid-template-columns:1fr}.statbox{display:grid;grid-template-columns:1fr 1fr}.top{align-items:flex-start}.pill{display:none}}@media(max-width:520px){.wrap{padding:18px 12px 35px}.card{padding:17px;border-radius:17px}.inputs{grid-template-columns:1fr}.actions .btn{flex:1 1 28%}.statbox{grid-template-columns:1fr}.brand{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">∑</div><div><div class="eyebrow">Data Structures · Mini Project</div><h1>Polynomial Calculator</h1></div></div>
+    <div class="pill">● Singly linked list engine</div>
+  </header>
+
+  <section class="hero">
+    <div class="card intro">
+      <div class="tag">LINKED LIST LAB</div>
+      <h2>Work with polynomials, term by term.</h2>
+      <p>Enter two polynomials, choose an operation, and explore how each term is stored in linked-list nodes. Multiplication displays every term pair and how like powers are merged.</p>
+    </div>
+    <div class="card statbox">
+      <div class="stat"><span>Storage structure</span><strong>Singly linked list</strong></div>
+      <div class="stat"><span>Term order</span><strong>Descending exponent</strong></div>
+      <div class="stat"><span>Zero terms</span><strong>Automatically removed</strong></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title"><h3>01 / Enter polynomials</h3><small>Use x, x^2, or x**2</small></div>
+    <div class="inputs">
+      <div class="field"><label for="pInput">Polynomial P(x)</label><input id="pInput" value="3x^2 + 2x + 5" autocomplete="off" spellcheck="false" aria-describedby="pError"><div class="hint">Example: 3x^2 + 2x + 5</div><div class="error" id="pError" role="alert"></div></div>
+      <div class="field"><label for="qInput">Polynomial Q(x)</label><input id="qInput" value="2x^2 + 4x + 1" autocomplete="off" spellcheck="false" aria-describedby="qError"><div class="hint">Example: -x^3 + 4 or x</div><div class="error" id="qError" role="alert"></div></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" data-op="add">P + Q &nbsp; Add</button>
+      <button class="btn" data-op="subtract">P − Q &nbsp; Subtract</button>
+      <button class="btn" data-op="multiply">P × Q &nbsp; Multiply</button>
+      <button class="btn" data-op="evaluate">Evaluate at x</button>
+      <button class="btn green" id="sampleBtn">Sample data</button>
+      <button class="btn subtle" id="clearBtn">Clear</button>
+    </div>
+    <div id="evalRow" style="display:none;margin-top:15px;max-width:260px"><div class="field"><label for="xValue">Evaluate at x =</label><input id="xValue" type="number" value="2" step="any"></div></div>
+  </section>
+
+  <section class="operation-row">
+    <div class="card result-card">
+      <div class="section-title"><h3>02 / Result</h3><small id="operationLabel">Ready</small></div>
+      <div class="result-label">Output polynomial</div>
+      <div class="result-math" id="result"><span class="empty">Choose an operation to see the result.</span></div>
+      <div id="complexity" class="complexity">Complexity: —</div>
+      <div id="status" class="note" aria-live="polite">Tip: press Enter in either polynomial input to add them.</div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>03 / Operation notes</h3><small>Viva helper</small></div>
+      <div id="explanation" class="empty">The selected operation's logic and complexity will appear here.</div>
+    </div>
+  </section>
+
+  <section class="visual-grid">
+    <div class="card">
+      <div class="section-title"><h3>04 / P(x) linked list</h3><small id="pCount">0 nodes</small></div>
+      <div class="list-visual" id="pList"><div class="empty-list">Enter a valid P(x) to visualize its nodes.</div></div>
+      <div class="note">Each node contains <code>[ coefficient | exponent | next ]</code>.</div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>05 / Q(x) linked list</h3><small id="qCount">0 nodes</small></div>
+      <div class="list-visual" id="qList"><div class="empty-list">Enter a valid Q(x) to visualize its nodes.</div></div>
+      <div class="note">The arrow points to the next node; the last pointer is NULL.</div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <div class="section-title"><h3>06 / Multiplication walkthrough</h3><small id="stepCount">Term pairs</small></div>
+    <div id="steps" class="steps"><div class="empty">Run Multiply to see every term pair and the merged polynomial.</div></div>
+    <div class="note">For multiplication, every term in P is multiplied by every term in Q. Terms with equal exponents are combined by the linked-list insertion function.</div>
+  </section>
+  <div class="footer">Created by <strong style="color:#aebcff">Ankur Patil</strong> · Data Structures Mini Project · No frameworks or external libraries required</div>
+</div>
+<script>
+"use strict";
+
+/*
+ * Node represents one term: coeff * x^exp.
+ * next links this term to the next node in descending exponent order.
+ */
+class Node {
+  constructor(coeff, exp) {
+    this.coeff = coeff;
+    this.exp = exp;
+    this.next = null;
+  }
+}
+
+/*
+ * Polynomial stores terms ONLY in a singly linked list.
+ * No array or dictionary is used as the polynomial's main storage.
+ */
+class Polynomial {
+  constructor() { this.head = null; }
+
+  /*
+   * Insert a term in descending exponent order.
+   * If an exponent already exists, merge coefficients.
+   * If the merged coefficient becomes zero, remove that node.
+   */
+  insertTerm(coeff, exp) {
+    if (!Number.isFinite(coeff) || !Number.isInteger(exp)) {
+      throw new Error("A term must have a finite coefficient and integer exponent.");
+    }
+    if (coeff === 0) return;
+    let prev = null;
+    let current = this.head;
+    while (current && current.exp > exp) {
+      prev = current;
+      current = current.next;
+    }
+    if (current && current.exp === exp) {
+      current.coeff += coeff;
+      if (Math.abs(current.coeff) < 1e-10) {
+        if (prev) prev.next = current.next;
+        else this.head = current.next;
+      }
+      return;
+    }
+    const node = new Node(coeff, exp);
+    node.next = current;
+    if (prev) prev.next = node;
+    else this.head = node;
+  }
+
+  /* Return a new linked-list polynomial, leaving this one unchanged. */
+  clone() {
+    const result = new Polynomial();
+    for (let node = this.head; node; node = node.next) {
+      result.insertTerm(node.coeff, node.exp);
+    }
+    return result;
+  }
+
+  /* Count nodes by walking through next pointers. */
+  get length() {
+    let count = 0;
+    for (let node = this.head; node; node = node.next) count++;
+    return count;
+  }
+
+  /* Convert the linked list to readable mathematical notation. */
+  toString() {
+    if (!this.head) return "0";
+    let output = "";
+    for (let node = this.head; node; node = node.next) {
+      const coeff = cleanNumber(node.coeff);
+      const abs = Math.abs(coeff);
+      let term;
+      if (node.exp === 0) term = formatNumber(abs);
+      else {
+        const variable = node.exp === 1 ? "x" : `x^${node.exp}`;
+        term = (Math.abs(abs - 1) < 1e-10 ? "" : formatNumber(abs)) + variable;
+      }
+      if (!output) output = (coeff < 0 ? "−" : "") + term;
+      else output += coeff < 0 ? " − " + term : " + " + term;
+    }
+    return output;
+  }
+
+  /* Evaluate the polynomial at a supplied x value. */
+  evaluate(x) {
+    let total = 0;
+    for (let node = this.head; node; node = node.next) {
+      total += node.coeff * Math.pow(x, node.exp);
+    }
+    return total;
+  }
+}
+
+/* Remove tiny floating-point noise and format numbers consistently. */
+function cleanNumber(n) { return Math.abs(n) < 1e-10 ? 0 : n; }
+function formatNumber(n) {
+  n = cleanNumber(n);
+  if (Number.isInteger(n)) return String(n);
+  return Number(n.toPrecision(8)).toString();
+}
+
+/*
+ * Parse text such as "3x^2 + 2x - 5", "-x^3 + 4", "x", or "2".
+ * Parsing inserts each parsed term into the linked list, so repeated
+ * powers are combined and the final list stays sorted automatically.
+ */
+function parsePolynomial(raw) {
+  let text = raw.trim().replace(/[−–]/g, "-").replace(/[＋]/g, "+")
+    .replace(/\*\*/g, "^").replace(/\s+/g, "");
+  if (!text) throw new Error("Please enter a polynomial, for example 3x^2 + 2x + 5.");
+  if (/[()]/.test(text)) throw new Error("Parentheses are not supported yet. Enter each term separately.");
+  if (!/^[+-]?/.test(text)) throw new Error("Start with a number, x, +, or -.");
+  if (text[0] !== "+" && text[0] !== "-") text = "+" + text;
+  const terms = [];
+  let start = 0;
+  for (let i = 1; i < text.length; i++) {
+    if (text[i] === "+" || text[i] === "-") {
+      terms.push(text.slice(start, i));
+      start = i;
+    }
+  }
+  terms.push(text.slice(start));
+  const polynomial = new Polynomial();
+  for (const term of terms) {
+    if (!term || term === "+" || term === "-") throw new Error("There is an empty term. Check your + and − signs.");
+    const match = term.match(/^([+-])(?:(\d+(?:\.\d+)?(?:e[+-]?\d+)?)?x(?:\^([+-]?\d+))?|(\d+(?:\.\d+)?(?:e[+-]?\d+)?))$/i);
+    if (!match) throw new Error(`I couldn't read "${term}". Try forms like 3x^2, -x, or 5.`);
+    const sign = match[1] === "-" ? -1 : 1;
+    if (term.toLowerCase().includes("x")) {
+      const coefficientText = match[2];
+      const coeff = sign * (coefficientText === undefined || coefficientText === "" ? 1 : Number(coefficientText));
+      const exp = match[3] === undefined ? 1 : Number(match[3]);
+      if (!Number.isInteger(exp) || exp < 0 || exp > 1000) throw new Error("Use a whole-number exponent from 0 to 1000.");
+      if (!Number.isFinite(coeff)) throw new Error("Please use a valid numeric coefficient.");
+      polynomial.insertTerm(coeff, exp);
+    } else {
+      const coeff = sign * Number(match[4]);
+      if (!Number.isFinite(coeff)) throw new Error("Please use a valid numeric constant.");
+      polynomial.insertTerm(coeff, 0);
+    }
+  }
+  return polynomial;
+}
+
+/* Addition: insert every term from both polynomials into a fresh list.
+ * If there are m and n terms, the simple sorted insertion method is O((m+n)^2)
+ * in the worst case because each insertion may scan the result list.
+ */
+function addPolynomials(p, q) {
+  const result = new Polynomial();
+  for (let n = p.head; n; n = n.next) result.insertTerm(n.coeff, n.exp);
+  for (let n = q.head; n; n = n.next) result.insertTerm(n.coeff, n.exp);
+  return result;
+}
+
+/* Subtraction adds P and the negated terms of Q. */
+function subtractPolynomials(p, q) {
+  const result = new Polynomial();
+  for (let n = p.head; n; n = n.next) result.insertTerm(n.coeff, n.exp);
+  for (let n = q.head; n; n = n.next) result.insertTerm(-n.coeff, n.exp);
+  return result;
+}
+
+/*
+ * Multiply every term of P by every term of Q.
+ * (a*x^m)(b*x^n) = (a*b)*x^(m+n).
+ * insertTerm merges products with the same exponent.
+ */
+function multiplyPolynomials(p, q) {
+  const result = new Polynomial();
+  const pairLines = [];
+  for (let a = p.head; a; a = a.next) {
+    for (let b = q.head; b; b = b.next) {
+      const coeff = a.coeff * b.coeff;
+      const exp = a.exp + b.exp;
+      const before = result.toString();
+      result.insertTerm(coeff, exp);
+      pairLines.push({
+        left: termToString(a.coeff, a.exp),
+        right: termToString(b.coeff, b.exp),
+        product: termToString(coeff, exp),
+        before,
+        after: result.toString()
+      });
+    }
+  }
+  return { result, pairLines };
+}
+
+/* Format one individual term for the multiplication walkthrough. */
+function termToString(coeff, exp) {
+  if (Math.abs(coeff) < 1e-10) return "0";
+  const abs = Math.abs(coeff);
+  const variable = exp === 0 ? "" : exp === 1 ? "x" : `x^${exp}`;
+  const number = exp !== 0 && Math.abs(abs - 1) < 1e-10 ? "" : formatNumber(abs);
+  return (coeff < 0 ? "−" : "") + number + variable;
+}
+
+/* Render linked-list nodes as [coeff | exp | next] -> ... -> NULL. */
+function renderList(poly, targetId, countId) {
+  const target = document.getElementById(targetId);
+  document.getElementById(countId).textContent = `${poly.length} node${poly.length === 1 ? "" : "s"}`;
+  if (!poly.head) {
+    target.innerHTML = '<div class="empty-list">NULL (zero polynomial; no non-zero terms)</div>';
+    return;
+  }
+  target.innerHTML = "";
+  const nodes = document.createElement("div");
+  nodes.className = "nodes";
+  let node = poly.head;
+  let index = 0;
+  while (node) {
+    const box = document.createElement("div");
+    box.className = "node";
+    box.style.animationDelay = `${index * 55}ms`;
+    box.innerHTML = `<div class="cell"><small>coeff</small>${escapeHtml(formatNumber(node.coeff))}</div><div class="cell"><small>exp</small>${node.exp}</div><div class="cell"><small>next</small>→</div>`;
+    nodes.appendChild(box);
+    const arrow = document.createElement("span");
+    arrow.className = "arrow";
+    arrow.textContent = "→";
+    nodes.appendChild(arrow);
+    node = node.next;
+    index++;
+  }
+  const nullBox = document.createElement("span");
+  nullBox.className = "null";
+  nullBox.textContent = "NULL";
+  nodes.appendChild(nullBox);
+  target.appendChild(nodes);
+}
+
+/* Escape text before placing user-derived content in HTML. */
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[ch]));
+}
+
+/* Show every multiplication pair and the state of the merged result. */
+function renderSteps(lines, finalResult) {
+  const target = document.getElementById("steps");
+  document.getElementById("stepCount").textContent = `${lines.length} pair${lines.length === 1 ? "" : "s"}`;
+  if (!lines.length) {
+    target.innerHTML = '<div class="empty">There are no term pairs because at least one polynomial is zero.</div>';
+    return;
+  }
+  target.innerHTML = "";
+  lines.forEach((line, i) => {
+    const item = document.createElement("div");
+    item.className = "step";
+    item.innerHTML = `<b>Pair ${i + 1}:</b> (${escapeHtml(line.left)}) × (${escapeHtml(line.right)})<span class="math">${escapeHtml(line.product)}</span><span style="color:#91a3c1">Merged list after this pair: ${escapeHtml(line.after)}</span>`;
+    target.appendChild(item);
+  });
+  const final = document.createElement("div");
+  final.className = "step";
+  final.innerHTML = `<b>Final merged polynomial</b><span class="math">${escapeHtml(finalResult.toString())}</span>`;
+  target.appendChild(final);
+}
+
+/* Read and validate both inputs, display their linked lists, then run an operation. */
+function getInputs() {
+  document.getElementById("pError").textContent = "";
+  document.getElementById("qError").textContent = "";
+  let p, q, valid = true;
+  try { p = parsePolynomial(document.getElementById("pInput").value); }
+  catch (error) { document.getElementById("pError").textContent = error.message; valid = false; }
+  try { q = parsePolynomial(document.getElementById("qInput").value); }
+  catch (error) { document.getElementById("qError").textContent = error.message; valid = false; }
+  if (!valid) return null;
+  renderList(p, "pList", "pCount");
+  renderList(q, "qList", "qCount");
+  return { p, q };
+}
+
+/* Update the result, complexity note, and viva explanation panel. */
+function showResult(name, resultText, complexity, explanation) {
+  document.getElementById("operationLabel").textContent = name;
+  document.getElementById("result").textContent = resultText;
+  document.getElementById("complexity").textContent = `Complexity: ${complexity}`;
+  document.getElementById("explanation").textContent = explanation;
+  document.getElementById("status").textContent = "Operation completed successfully.";
+}
+
+/* Dispatch the selected operation. Enter defaults to addition. */
+function calculate(operation) {
+  const inputs = getInputs();
+  if (!inputs) return;
+  const { p, q } = inputs;
+  document.getElementById("evalRow").style.display = operation === "evaluate" ? "block" : "none";
+  if (operation === "add") {
+    const result = addPolynomials(p, q);
+    showResult("Addition", result.toString(), "O((m+n)²) worst case",
+      "Copy each term from P and Q into a new linked list. insertTerm keeps exponents sorted and combines terms with equal exponents. With this simple insertion approach, each insert can scan the current result list.");
+    document.getElementById("steps").innerHTML = '<div class="empty">Choose Multiply to see the term-by-term walkthrough.</div>';
+    document.getElementById("stepCount").textContent = "Term pairs";
+  } else if (operation === "subtract") {
+    const result = subtractPolynomials(p, q);
+    showResult("Subtraction", result.toString(), "O((m+n)²) worst case",
+      "Copy P into a new linked list, then insert every term of Q with its coefficient sign reversed. Matching exponents merge, and any zero coefficient node is removed.");
+    document.getElementById("steps").innerHTML = '<div class="empty">Choose Multiply to see the term-by-term walkthrough.</div>';
+    document.getElementById("stepCount").textContent = "Term pairs";
+  } else if (operation === "multiply") {
+    const output = multiplyPolynomials(p, q);
+    showResult("Multiplication", output.result.toString(), "O(m·n·k) with sorted insertion",
+      "For each of the m terms in P, visit all n terms in Q. Multiply coefficients and add exponents. Each of the m·n products is inserted into the result list; k is the number of terms accumulated so far, so insertion can take O(k).");
+    renderSteps(output.pairLines, output.result);
+  } else if (operation === "evaluate") {
+    const x = Number(document.getElementById("xValue").value);
+    if (!Number.isFinite(x)) {
+      document.getElementById("status").textContent = "Please enter a valid number for x.";
+      return;
+    }
+    const pv = p.evaluate(x), qv = q.evaluate(x);
+    showResult(`Evaluation at x = ${formatNumber(x)}`, `P(${formatNumber(x)}) = ${formatNumber(pv)}   ·   Q(${formatNumber(x)}) = ${formatNumber(qv)}`,
+      "O(m+n)",
+      "Walk through each linked list once. For every node, add coeff × x raised to exp to the running total. Evaluating P and Q takes O(m+n) combined.");
+    document.getElementById("steps").innerHTML = '<div class="empty">Evaluation walks through each linked list once.</div>';
+    document.getElementById("stepCount").textContent = "Evaluation";
+  }
+}
+
+/* Button handlers. */
+document.querySelectorAll("[data-op]").forEach(button => {
+  button.addEventListener("click", () => calculate(button.dataset.op));
+});
+document.getElementById("sampleBtn").addEventListener("click", () => {
+  document.getElementById("pInput").value = "3x^2 + 2x + 5";
+  document.getElementById("qInput").value = "2x^2 + 4x + 1";
+  calculate("add");
+  document.getElementById("status").textContent = "Sample data loaded. Try Multiply to verify the expected answer.";
+});
+document.getElementById("clearBtn").addEventListener("click", () => {
+  document.getElementById("pInput").value = "";
+  document.getElementById("qInput").value = "";
+  document.getElementById("pError").textContent = "";
+  document.getElementById("qError").textContent = "";
+  document.getElementById("result").innerHTML = '<span class="empty">Choose an operation to see the result.</span>';
+  document.getElementById("operationLabel").textContent = "Ready";
+  document.getElementById("complexity").textContent = "Complexity: —";
+  document.getElementById("explanation").textContent = "The selected operation's logic and complexity will appear here.";
+  document.getElementById("status").textContent = "Inputs cleared.";
+  document.getElementById("pList").innerHTML = '<div class="empty-list">Enter a valid P(x) to visualize its nodes.</div>';
+  document.getElementById("qList").innerHTML = '<div class="empty-list">Enter a valid Q(x) to visualize its nodes.</div>';
+  document.getElementById("pCount").textContent = "0 nodes";
+  document.getElementById("qCount").textContent = "0 nodes";
+  document.getElementById("steps").innerHTML = '<div class="empty">Run Multiply to see every term pair and the merged polynomial.</div>';
+  document.getElementById("stepCount").textContent = "Term pairs";
+  document.getElementById("evalRow").style.display = "none";
+});
+/* Press Enter inside either polynomial input to calculate the sum. */
+["pInput", "qInput"].forEach(id => {
+  document.getElementById(id).addEventListener("keydown", event => {
+    if (event.key === "Enter") calculate("add");
+  });
+});
+
+/* Load and display the sample test case immediately on first open. */
+calculate("add");
+</script>
+</body>
+</html>
